@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Load User Data</title>
+</head>
+<body>
+    <h1>Load User Data</h1>
+
+    <!-- Link to navigate back to the User Data Form page -->
+    <a href="index.html">Go to User Data Form</a>
+    
+    <br><br> <!-- Add some space between the link and the button -->
+
+    <button type="button" onclick="loadUser()">Load User</button>
+
+    <div id="userData" style="margin-top: 20px;">
+        <!-- Loaded user data will be displayed here -->
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function loadUser() {
+            $.ajax({
+                url: 'https://user-form-o682.onrender.com/api/user/get',  // Make sure the URL is correct
+                type: 'GET',
+                success: function(response) {
+                    displayUserData(response);
+                },
+                error: function(err) {
+                    const errorMessage = err.responseJSON && err.responseJSON.message ? err.responseJSON.message : 'Unknown error';
+                    alert('Error loading user data: ' + errorMessage);
+                }
+            });
+        }
+
+        function displayUserData(user) {
+            if (user) {
+                const userDataHtml = `
+                    <p><strong>First Name:</strong> ${user.firstName}</p>
+                    <p><strong>Last Name:</strong> ${user.lastName}</p>
+                    <p><strong>Mobile No:</strong> ${user.mobileNo}</p>
+                    <p><strong>Email:</strong> ${user.email}</p>
+                    <p><strong>Address:</strong> ${user.address}</p>
+                    <p><strong>Street:</strong> ${user.street}</p>
+                    <p><strong>City:</strong> ${user.city}</p>
+                    <p><strong>State:</strong> ${user.state}</p>
+                    <p><strong>Country:</strong> ${user.country}</p>
+                    <p><strong>Login ID:</strong> ${user.loginId}</p>
+                `;
+                $('#userData').html(userDataHtml);
+            } else {
+                $('#userData').html('<p>No user data found.</p>');
+            }
+        }
+    </script>
+</body>
+</html>
