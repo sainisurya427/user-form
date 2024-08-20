@@ -11,7 +11,10 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // Enable CORS for development purposes
-app.use(cors());
+ app.use(cors({
+    origin:`https://user-form-o682.onrender.com/`,
+    methods : [`GET`,`POST`]
+}));
 
 // Body parser middleware
 app.use(bodyParser.json());
