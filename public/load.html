@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,10 +8,9 @@
 <body>
     <h1>Load User Data</h1>
 
-    <!-- Link to navigate back to the User Data Form page -->
     <a href="index.html">Go to User Data Form</a>
     
-    <br><br> <!-- Add some space between the link and the button -->
+    <br><br>
 
     <button type="button" onclick="loadUser()">Load User</button>
 
@@ -23,12 +22,13 @@
     <script>
         function loadUser() {
             $.ajax({
-                url: 'https://user-form-o682.onrender.com/api/user/get',  // Make sure the URL is correct
+                url: 'https://user-form-o682.onrender.com/api/user/get',  // Ensure this is the correct endpoint
                 type: 'GET',
                 success: function(response) {
                     displayUserData(response);
                 },
                 error: function(err) {
+                    console.error('Error loading user data:', err);  // Log full error to console
                     const errorMessage = err.responseJSON && err.responseJSON.message ? err.responseJSON.message : 'Unknown error';
                     alert('Error loading user data: ' + errorMessage);
                 }
