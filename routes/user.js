@@ -1,6 +1,7 @@
  const express = require('express');
 const router = express.Router();
 const User = require('../models/User');  // Assuming you have a User model
+const userController = require('../controllers/userController');
 
 // Save user data
 router.post('/save', async (req, res) => {
