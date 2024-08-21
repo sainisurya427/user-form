@@ -9,12 +9,12 @@
     <h1>Load User Data</h1>
 
     <a href="index.html">Go to User Data Form</a>
-    
+
     <br><br>
 
     <button type="button" onclick="loadUser()">Load User</button>
 
-    <div id="userData" style="margin-top: 20px;">
+    <div id="usersData" style="margin-top: 20px;">
         <!-- Loaded user data will be displayed here -->
     </div>
 
@@ -22,50 +22,47 @@
     <script>
         function loadUser() {
             $.ajax({
-                url: 'https://user-form-o682.onrender.com/api/user/load',  // Ensure this is the correct endpoint
+                url: 'https://user-form-o682.onrender.com/api/user/load',
                 type: 'GET',
-                success: function(response) {
-                    displayUserData(response);
+                contentType: 'application/json',
+                success: function(users) {
+                    console.log(users);  // Log the data to verify its structure
+                    displayUserData(users);
                 },
                 error: function(err) {
-                    console.error('Error loading user data:', err);  // Log full error to console
-                    const errorMessage = err.responseJSON && err.responseJSON.message ? err.responseJSON.message : 'Unknown error';
-                    alert('Error loading user data: ' + errorMessage);
+                    console.error('Error loading user data:', err);
+                    $('#usersData').html('<p>Error loading user data.</p>');
                 }
             });
         }
 
         function displayUserData(users) {
-    if (users && users.length > 0) {
-        // Initialize an empty string to hold all the user data HTML
-        let usersDataHtml = '';
-        
-        // Iterate over each user and append their data to the HTML string
-        users.forEach(user => {
-            usersDataHtml += `
-                <div>
-                    <p><strong>First Name:</strong> ${user.firstName || 'No first name'}</p>
-                    <p><strong>Last Name:</strong> ${user.lastName || 'No last name'}</p>
-                    <p><strong>Mobile No:</strong> ${user.mobileNo || 'No mobile number'}</p>
-                    <p><strong>Email:</strong> ${user.email || 'No email'}</p>
-                    <p><strong>Address:</strong> ${user.address || 'No address'}</p>
-                    <p><strong>Street:</strong> ${user.street || 'No street'}</p>
-                    <p><strong>City:</strong> ${user.city || 'No city'}</p>
-                    <p><strong>State:</strong> ${user.state || 'No state'}</p>
-                    <p><strong>Country:</strong> ${user.country || 'No country'}</p>
-                    <p><strong>Login ID:</strong> ${user.loginId || 'No login ID'}</p>
-                </div>
-                <hr> <!-- Separate users with a horizontal line -->
-            `;
-        });
+            if (Array.isArray(users) && users.length > 0) {
+                let usersDataHtml = '';
 
-        // Set the accumulated HTML string to the usersData div
-        $('#usersData').html(usersDataHtml);
-    } else {
-        $('#usersData').html('<p>No user data found.</p>');
-    }
-}
+                users.forEach(user => {
+                    usersDataHtml += `
+                        <div>
+                            <p><strong>First Name:</strong> ${user.firstName || 'No first name'}</p>
+                            <p><strong>Last Name:</strong> ${user.lastName || 'No last name'}</p>
+                            <p><strong>Mobile No:</strong> ${user.mobileNo || 'No mobile number'}</p>
+                            <p><strong>Email:</strong> ${user.email || 'No email'}</p>
+                            <p><strong>Address:</strong> ${user.address || 'No address'}</p>
+                            <p><strong>Street:</strong> ${user.street || 'No street'}</p>
+                            <p><strong>City:</strong> ${user.city || 'No city'}</p>
+                            <p><strong>State:</strong> ${user.state || 'No state'}</p>
+                            <p><strong>Country:</strong> ${user.country || 'No country'}</p>
+                            <p><strong>Login ID:</strong> ${user.loginId || 'No login ID'}</p>
+                        </div>
+                        <hr>
+                    `;
+                });
 
+                $('#usersData').html(usersDataHtml);
+            } else {
+                $('#usersData').html('<p>No user data found.</p>');
+            }
+        }
     </script>
 </body>
 </html>
