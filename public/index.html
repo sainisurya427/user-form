@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Data Form</title>
+ 
 </head>
 <body>
     <h1>User Data Form</h1>
@@ -28,7 +29,9 @@
     <a href="load.html">Go to Load User Data</a>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script>
+       const socket = io('https://user-form-o682.onrender.com');
         function saveUser() {
             const userData = {
                 firstName: $("#firstName").val(),
@@ -52,6 +55,12 @@
                 success: function(response) {
                     alert('User saved successfully!');
                     $('#userForm')[0].reset();  // Reset the form after successful save
+
+                  // Emit event to join the live user room
+                    socket.emit('joinRoom', {
+                        email: userData.email,
+                        name: userData.firstName + ' ' + userData.lastName
+                    });
                 },
                 error: function(err) {
                     const errorMessage = err.responseJSON && err.responseJSON.message ? err.responseJSON.message : 'Unknown error';
@@ -59,6 +68,11 @@
                 }
             });
         }
+     
+     // Listen for updates to the live user list
+        socket.on('updateUsers', function(users) {
+            console.log('Live users:', users);  // You can update your UI here to reflect live users if needed
+        });
     </script>
 </body>
 </html>
