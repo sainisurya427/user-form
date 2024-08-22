@@ -22,25 +22,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
      <script src="/socket.io/socket.io.js"></script>
     <script>
-
-     $(document).ready(function() {
-            var socket = io(); // Connect to the socket.io server
-
-            // Handle userRegistered event
-            socket.on('userRegistered', function(users) {
-                // Clear previous data
-                $('#userData').empty();
-
-                // Display each user’s data
-                users.forEach(user => {
-                    $('#userData').append(`
-                        <p><strong>Name:</strong> ${user.name}</p>
-                        <p><strong>Email:</strong> ${user.email}</p>
-                        <p><strong>Socket ID:</strong> ${user.socketId}</p>
-                        <hr>
-                    `);
-                });
-            });
+ 
         function loadUser() {
             $.ajax({
                 url: 'https://user-form-o682.onrender.com/api/user/load',
