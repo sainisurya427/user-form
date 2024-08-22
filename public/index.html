@@ -31,7 +31,8 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-       const socket = io('https://user-form-o682.onrender.com');
+     // 'https://user-form-o682.onrender.com'
+       const socket = io();
         function saveUser() {
             const userData = {
                 firstName: $("#firstName").val(),
@@ -55,12 +56,9 @@
                 success: function(response) {
                     alert('User saved successfully!');
                     $('#userForm')[0].reset();  // Reset the form after successful save
-
-                  // Emit event to join the live user room
-                    socket.emit('joinRoom', {
-                        email: userData.email,
-                        name: userData.firstName + ' ' + userData.lastName
-                    });
+                 
+                  // Notify the server via socket that a new user is saved
+                      socket.emit('joinRoom', userData);
                 },
                 error: function(err) {
                     const errorMessage = err.responseJSON && err.responseJSON.message ? err.responseJSON.message : 'Unknown error';
@@ -68,11 +66,6 @@
                 }
             });
         }
-     
-     // Listen for updates to the live user list
-        socket.on('updateUsers', function(users) {
-            console.log('Live users:', users);  // You can update your UI here to reflect live users if needed
-        });
     </script>
 </body>
 </html>
