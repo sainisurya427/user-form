@@ -17,6 +17,9 @@ const port = process.env.PORT || 3000;
 const server = http.createServer(app);
 const io = socketIo(server); // Initialize Socket.io with the HTTP server
 
+// Make socket.io available to the app (for controllers)
+app.set('socketio', io);
+
 // Enable CORS for development purposes
  app.use(cors({
     origin:`https://user-form-o682.onrender.com/`,
