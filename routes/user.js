@@ -2,12 +2,15 @@
 const router = express.Router();
 const User = require('../models/User');  // Assuming you have a User model
 const userController = require('../controllers/userController');
+const io = require('../server').io; // Import the socket.io instance
 
 // Save user data
 router.post('/save', async (req, res) => {
     try {
         const newUser = new User(req.body);
         await newUser.save();
+      // Notify socket.io to join the user to the room
+        io.emit('userSaved', savedUser);
         res.status(201).json({ message: 'User saved successfully!' });
     } catch (err) {
         res.status(400).json({ message: 'Error saving user: ' + err.message });
