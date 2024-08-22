@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Users</title>
+</head>
+<body>
+    <h1>Live Users</h1>
+    <ul id="usersList"></ul>
+
+    <!-- Include Socket.io -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        // Listen for the updated user list from the server
+        socket.on('userList', (users) => {
+            const userListElement = document.getElementById('usersList');
+            userListElement.innerHTML = ''; // Clear the list before updating
+
+            users.forEach(user => {
+                const li = document.createElement('li');
+                li.innerHTML = `<strong>${user.name}</strong> (Email: ${user.email}, Socket ID: ${user.socketId})`;
+                li.onclick = () => showUserDetails(user);
+                userListElement.appendChild(li);
+            });
+        });
+
+        // Function to show user details in a popup
+        function showUserDetails(user) {
+            alert(`Name: ${user.name}\nEmail: ${user.email}\nSocket ID: ${user.socketId}`);
+        }
+    </script>
+</body>
+</html>
