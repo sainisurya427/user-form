@@ -41,8 +41,8 @@ app.get('/', (req, res) => {
 });
 
 
-// Array to store live users
-let liveUsers = [];
+ // Store users in memory for simplicity
+const liveUsers = new Map();
 
 // Handle Socket.io connections
 io.on('connection', (socket) => {
@@ -50,22 +50,22 @@ io.on('connection', (socket) => {
 
     // Listen for a user joining the room
     socket.on('joinRoom', (user) => {
-        // Add user to the live users array
-        liveUsers.push({ socketId: socket.id, email: user.email, name: user.name });
+        // Add the user to the live users room
+        socket.join('liveUsers');
+        liveUsers.set(socket.id, { email: user.email, name: user.name, socketId: socket.id }); 
 
-        // Emit the updated live users list to all connected clients
-        io.emit('updateUsers', liveUsers);
+          // Broadcast updated user list to everyone in the room
+        io.to('liveUsers').emit('userList', Array.from(liveUsers.values()));
     });
 
     // Handle user disconnecting
     socket.on('disconnect', () => {
         console.log('A user disconnected:', socket.id);
-        
-        // Remove the disconnected user from the live users array
-        liveUsers = liveUsers.filter(user => user.socketId !== socket.id);
+         liveUsers.delete(socket.id);
+       
 
-        // Emit the updated live users list to all connected clients
-        io.emit('updateUsers', liveUsers);
+         // Broadcast updated user list to everyone in the room
+        io.to('liveUsers').emit('userList', Array.from(liveUsers.values()));
     });
 });
 
