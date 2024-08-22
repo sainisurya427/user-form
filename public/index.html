@@ -31,8 +31,36 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-     // 'https://user-form-o682.onrender.com'
-       const socket = io();
+             let socket;
+
+        // Initialize Socket.io
+        function initializeSocket() {
+            socket = io();
+
+            // Handle connection established
+            socket.on('connect', () => {
+                console.log('Connected to the server via Socket.io');
+            });
+
+            // Handle connection error
+            socket.on('connect_error', (error) => {
+                console.error('Connection error:', error);
+                alert('Unable to connect to the server. Please try again later.');
+            });
+
+            // Handle disconnection
+            socket.on('disconnect', (reason) => {
+                console.warn('Disconnected from the server:', reason);
+                if (reason === 'io server disconnect') {
+                    // Attempt to reconnect if the server disconnects the client
+                    socket.connect();
+                }
+            });
+        }
+
+        // Initialize Socket.io when the page loads
+        window.onload = initializeSocket;
+
         function saveUser() {
             const userData = {
                 firstName: $("#firstName").val(),
@@ -57,8 +85,12 @@
                     alert('User saved successfully!');
                     $('#userForm')[0].reset();  // Reset the form after successful save
                  
-                  // Notify the server via socket that a new user is saved
-                      socket.emit('joinRoom', userData);
+                   // Notify the server via socket that a new user has joined the room
+                    if (socket && socket.connected) {
+                        socket.emit('joinRoom', userData);
+                    } else {
+                        console.error('Socket is not connected');
+                    }
                 },
                 error: function(err) {
                     const errorMessage = err.responseJSON && err.responseJSON.message ? err.responseJSON.message : 'Unknown error';
